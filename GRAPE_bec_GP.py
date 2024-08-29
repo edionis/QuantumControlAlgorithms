@@ -60,7 +60,7 @@ class BEC(object):
         """ Return the free Hamiltonian part."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H0   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H0 matrix
+        H0   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H0 matrix
         for k in range(-nmax,nmax+1):                                              # Create H0 matrix
             j = k+nmax
             H0[j,j] = (self.q + k)**2
@@ -70,7 +70,7 @@ class BEC(object):
         """ Return the part of H controlled by the cosine function."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H1   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H1 matrix
+        H1   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H1 matrix
         for k in range(-nmax,nmax+1):
             j = k+nmax
             if(k < nmax):
@@ -82,7 +82,7 @@ class BEC(object):
         """ Return the part of H controlled by the sine function."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H2   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H2 matrix
+        H2   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H2 matrix
         for k in range(-nmax,nmax+1):
             j = k+nmax
             if(k < nmax):
@@ -94,7 +94,7 @@ class BEC(object):
         """ Return the passage matrix from DVR to FBR."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        R    = np.zeros((Nk,Nk), dtype = 'complex_')                               # Change-of-basis matrix
+        R    = np.zeros((Nk,Nk), dtype = 'complex128')                               # Change-of-basis matrix
         for j in range(Nk):
             for n in range(Nk):
                 norm = np.sqrt(1.0/Nk)
@@ -164,7 +164,7 @@ class propagation(object):                                                      
     def get_psi_DVR(self, C):
         """ State in DVR basis."""
         nmax   = (self.Nk-1)/2                                                     # Truncation order
-        psiDVR = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                   # Initialization of psi matrix in DVR basis
+        psiDVR = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                   # Initialization of psi matrix in DVR basis
         for j in range(self.Nk):
             for n in range(self.Nk):
                 coef = (2.0*np.pi)/self.Nk
@@ -181,7 +181,7 @@ class propagation(object):                                                      
         H2 = self.H[2]                                                             # Controlled part of H by sin(u)
         beta = self.H[3]                                                           # Interaction paramater
         R  = self.H[4]                                                             # Matrix to go from DVR to FBR
-        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                       # Initialisation of propagator
+        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                       # Initialisation of propagator
         # Hamiltonian
         V      =  np.cos(ut)*H1 + np.sin(ut)*H2 
         psiDVR = self.get_psi_DVR(C)                                               # State in DVR basis
@@ -192,7 +192,7 @@ class propagation(object):                                                      
     def get_state(self):
         """ State at time t."""
         Nt     = self.t.size                                                       # Number of time points
-        C      = np.zeros((self.Nk,Nt), dtype = 'complex_')                        # Initialisation of State
+        C      = np.zeros((self.Nk,Nt), dtype = 'complex128')                        # Initialisation of State
         C[:,0] = self.psi0                                                         # Initial condition
         for n in range(Nt-1):
             dt = self.t[n+1]-self.t[n]                                             # Time step
@@ -209,10 +209,10 @@ class propagation(object):                                                      
         beta     = self.H[3]
         R        = self.H[4]
         Nt       = self.t.size                                                     # Number of time points
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialisation of adjoint state associated to s0
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialisation of adjoint state associated to s0
         rev_time = list(reversed(range(len(self.t))))                              # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        pc       = np.zeros((2*self.Nk,Nt), dtype = 'complex_')                    # Extended state
+        pc       = np.zeros((2*self.Nk,Nt), dtype = 'complex128')                    # Extended state
         pc[0:self.Nk,-1] = psif                                                    # State at tf
         pc[self.Nk:,-1]  = -(self.psit.conj().T @ psif)*self.psit                  # Final condition for adjoint state
         D[:,-1] = pc[self.Nk:,-1]
@@ -340,7 +340,7 @@ def gaussian_state(x0, p0, nmax, s):
     numpy.ndarray
         Normalized Gaussian state.
     """
-    gs = np.zeros(Nk, dtype='complex_')
+    gs = np.zeros(Nk, dtype='complex128')
     for k in range(-nmax, nmax + 1):
         gs[k + nmax] = (np.exp(1j * x0 * p0 * 0.5) * np.exp(-1j * k * x0)
                         * np.exp(-(k - p0) ** 2 / np.sqrt(s)))
@@ -371,7 +371,7 @@ def squeezed_state(x0, p0, nmax, s, X):
     numpy.ndarray
         The squeezed Gaussian state as a complex numpy array.
     """
-    gs = np.zeros(Nk, dtype='complex_')
+    gs = np.zeros(Nk, dtype='complex128')
     for k in range(-nmax, nmax + 1):
         gs[k + nmax] = (np.exp(1j * x0 * p0 * 0.5) *
                         np.exp(-1j * k * x0) *

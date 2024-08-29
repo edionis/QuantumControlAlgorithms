@@ -52,7 +52,7 @@ class FLUX(object):
     def get_H0(self):
         """ Return the free Hamiltonian part."""
         Nk   = self.dimension                                                      # System's dimension
-        H0   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H0 matrix
+        H0   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H0 matrix
         for k in range(Nk):                                                        # Create H0 matrix
             H0[k,k] = np.sqrt(8.0*self.Ec*self.El)*(k+0.5)
         return H0                                                                  # Not controlled part of H 
@@ -60,7 +60,7 @@ class FLUX(object):
     def get_H1(self):
         """ Return the free Hamiltonian part."""
         Nk   = self.dimension                                                      # System's dimension
-        H1   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H1 matrix
+        H1   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H1 matrix
         lamb = (self.El/(8.0*self.Ec))**(-0.25)
         coef = (lamb*self.El)/np.sqrt(2.0)
         for k in range(Nk):                                                        # Create H1 matrix
@@ -72,8 +72,8 @@ class FLUX(object):
     def get_cosX(self):
         """ Return the free Hamiltonian part."""
         Nk   = self.dimension                                                      # System's dimension
-        X    = np.zeros((Nk,Nk), dtype = 'complex_')                               # X matrix
-        cosX = np.zeros((Nk,Nk), dtype = 'complex_')                               # cosX matrix
+        X    = np.zeros((Nk,Nk), dtype = 'complex128')                               # X matrix
+        cosX = np.zeros((Nk,Nk), dtype = 'complex128')                               # cosX matrix
         lamb = (self.El/(8.0*self.Ec))**(-0.25)
         coef = 1.0/np.sqrt(2.0)
         for k in range(Nk):
@@ -177,7 +177,7 @@ class propagation(object):
         H0   = self.H[0]                                                           # Non controlled part of Hamiltonian
         H1   = self.H[1]                                                           # Controlled part of Hamiltonian
         cosX = self.H[2]                                                           # cosX matrix
-        U    = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                     # Initialisation of propagator
+        U    = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                     # Initialisation of propagator
         H = H0 + cosX + ut*H1                                                      # Hamiltonian
         U = linalg.expm(-1j*2.0*np.pi*H*dt)                                        # Propagator at each time step
         return U
@@ -185,7 +185,7 @@ class propagation(object):
     def get_state(self):
         """ State at time t."""
         Nt     = self.t.size                                                       # Number of time points
-        C      = np.zeros((self.Nk,Nt), dtype = 'complex_')                        # Initialisation of State
+        C      = np.zeros((self.Nk,Nt), dtype = 'complex128')                        # Initialisation of State
         C[:,0] = self.psi0                                                         # Initial condition
         u      = self.get_u()                                                      # Get time continuous control
         for n in range(Nt-1):
@@ -201,7 +201,7 @@ class propagation(object):
         u      = self.get_u()                                                      # Get time continuous control
         rev_time = list(reversed(range(len(self.t))))                              # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialization of adjoint state
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialization of adjoint state
         D[:,-1]  = -(self.psit.conj().T @ psif) * self.psit                        # Final condition for the adjoint state
         for n in rev_time:
             dt       = self.t[n]-self.t[n-1]                                       # Time step
@@ -336,7 +336,7 @@ def phin(n, x_tab, lamb):
     numpy.ndarray
         The computed wave function.
     """
-    phi_n = np.zeros(x_tab.size, dtype='complex_')
+    phi_n = np.zeros(x_tab.size, dtype='complex128')
     for ix, x in enumerate(x_tab):
         coef1 = 1.0 / (np.sqrt(2.0 ** n * math.factorial(n)))
         coef2 = np.sqrt(lamb) * (1.0 / np.pi) ** 0.25

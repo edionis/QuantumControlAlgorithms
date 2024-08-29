@@ -60,12 +60,12 @@ class BEC(object):
         """Return the total Hamiltonian."""
         Nk = self.get_Dimension()
         H0 = np.zeros((Nk, Nk))                                                    # Diagonal of the dynamic's matrix
-        H12p = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian 12
-        H12m = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian -12
-        H23p = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian 23
-        H23m = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian -23
-        H31p = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian 31
-        H31m = np.zeros((Nk, Nk), dtype='complex_')                                # Controlled Hamiltonian -31
+        H12p = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian 12
+        H12m = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian -12
+        H23p = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian 23
+        H23m = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian -23
+        H31p = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian 31
+        H31m = np.zeros((Nk, Nk), dtype='complex128')                                # Controlled Hamiltonian -31
         coeff = -0.25 * self.s
         for m in range(-self.mmax, self.mmax + 1):
             for n in range(-self.nmax, self.nmax + 1):
@@ -147,7 +147,7 @@ class propagation(object):                                                      
     def get_state(self):
         """ State at time t."""
         Nt     = self.t.size                                                       # Number of time points
-        C      = np.zeros((self.Nk,Nt), dtype = 'complex_')                        # Initialization of the state
+        C      = np.zeros((self.Nk,Nt), dtype = 'complex128')                        # Initialization of the state
         C[:,0] = self.psi0                                                         # Initial condition
         for n in range(Nt-1):
             dt       = self.t[n+1]-self.t[n]                                       # Time step
@@ -163,7 +163,7 @@ class propagation(object):                                                      
         Nt       = self.t.size                                                     # Number of time points
         rev_time = list(reversed(range(len(self.t))))                              # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialization of adjoint state
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialization of adjoint state
         D[:,-1]  = -(self.psit.conj().T @ psif) * self.psit                        # Final condition for the adjoint state
         for n in rev_time:
             dt       = self.t[n]-self.t[n-1]                                       # Time step

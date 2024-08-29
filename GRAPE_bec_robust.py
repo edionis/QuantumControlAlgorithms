@@ -58,7 +58,7 @@ class BEC(object):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension
         p0   = self.p0
-        H0   = np.zeros((p0.size,Nk,Nk), dtype = 'complex_')
+        H0   = np.zeros((p0.size,Nk,Nk), dtype = 'complex128')
         for pp in range(p0.size):
             for k in range(-nmax,nmax+1):
                 j = k+nmax
@@ -70,7 +70,7 @@ class BEC(object):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                    
         p0   = self.p0
-        H0c  = np.zeros((p0.size,Nk,Nk), dtype = 'complex_')                     
+        H0c  = np.zeros((p0.size,Nk,Nk), dtype = 'complex128')                     
         for pp in range(p0.size):
             for k in range(-nmax,nmax+1):                                        
                 j = k+nmax
@@ -81,7 +81,7 @@ class BEC(object):
         """ Return the cosine controlled part of H."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                    
-        Hc   = np.zeros((Nk,Nk), dtype = 'complex_')                             
+        Hc   = np.zeros((Nk,Nk), dtype = 'complex128')                             
         for k in range(-nmax,nmax+1):                                            
             j = k+nmax
             if(k < nmax):
@@ -143,14 +143,14 @@ class propagation(object):
         H0 = self.H[0]                                                             # H0 matrix
         H0c = self.H[1]                                                            # Non controlled part of Hamiltonian
         Hc = self.H[2]                                                             # Controlled part of H
-        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                       # Initialisation of propagator
+        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                       # Initialisation of propagator
         U = linalg.expm(-1j*(H0[i,:,:] + upt*H0c[i,:,:]  + uat*Hc)*dt)             # Propagator at each time step
         return U
 
     def get_state(self, i):
         """ State at time t."""
         Nt     = self.t.size                                                       # Number of time points
-        C      = np.zeros((self.Nk,Nt), dtype = 'complex_')                        # Initialisation of State
+        C      = np.zeros((self.Nk,Nt), dtype = 'complex128')                        # Initialisation of State
         C[:,0] = self.psi0                                                         # Initial condition
         for n in range(Nt-1):
             dt       = self.t[n+1]-self.t[n]                                       # Time step
@@ -165,7 +165,7 @@ class propagation(object):
         Nt       = self.t.size                                                     # Number of time points
         rev_time = list(reversed(range(len(self.t))))                              # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialization of adjoint state
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialization of adjoint state
         D[:,-1]  = chif                                                            # Final condition for the adjoint state
         for n in rev_time:
             dt       = self.t[n]-self.t[n-1]                                       # Time step
@@ -187,7 +187,7 @@ class propagation(object):
         H0c      = self.H[1]                                                       # Non controlled part of Hamiltonian
         Hc       = self.H[2]                                                       # Controlled part of H by amplitude
         Nt       = self.t.size                                                     # Number of time points
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialisation of adjoint state
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialisation of adjoint state
         dFp       = np.zeros(Nt)                                                   # Initialization of dF tab
         dFa       = np.zeros(Nt)                                                   # Initialization of dF tab
         C        = self.get_state(i)                                               # Get state
@@ -316,7 +316,7 @@ def gaussian_state(u, v, nmax, s):
     numpy.ndarray
         The Gaussian state as a complex numpy array.
     """
-    gs = np.zeros(2 * nmax + 1, dtype='complex_')
+    gs = np.zeros(2 * nmax + 1, dtype='complex128')
     for k in range(-nmax, nmax + 1):
         gs[k + nmax] = (np.exp(1j * u * v * 0.5) *
                         np.exp(-2.j * k * u) *
@@ -348,7 +348,7 @@ def squeezed_state(u, v, nmax, s, X):
     numpy.ndarray
         The squeezed state as a complex numpy array.
     """
-    gs = np.zeros(2 * nmax + 1, dtype='complex_')
+    gs = np.zeros(2 * nmax + 1, dtype='complex128')
     for k in range(-nmax, nmax + 1):
         gs[k + nmax] = (np.exp(1j * u * v * 0.5) *
                         np.exp(-2.j * k * u) *

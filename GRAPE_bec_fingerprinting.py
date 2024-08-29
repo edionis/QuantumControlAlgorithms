@@ -63,7 +63,7 @@ class BEC(object):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
         q    = self.q                                                          # Quasi-momentum
-        H0   = np.zeros((self.lamb.size, self.t.size,Nk,Nk), dtype = 'complex_')   # H0 matrix
+        H0   = np.zeros((self.lamb.size, self.t.size,Nk,Nk), dtype = 'complex128')   # H0 matrix
         for i in range(self.lamb.size):
             for l in range(self.t.size):
                 for k in range(-nmax,nmax+1):                                              
@@ -74,7 +74,7 @@ class BEC(object):
     def get_H1(self):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H1   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H1 matrix
+        H1   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H1 matrix
         for k in range(-nmax,nmax+1):                                              # Create Hm matrix      
             j = k+nmax
             if(k < nmax):
@@ -85,7 +85,7 @@ class BEC(object):
     def get_H2(self):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H2   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H2 matrix
+        H2   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H2 matrix
         for k in range(-nmax,nmax+1):                                              # Create H2 matrix      
             j = k+nmax
             if(k < nmax):
@@ -97,7 +97,7 @@ class BEC(object):
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
         q    = self.q                                                          # Quasi-momentum
-        dH   = np.zeros((self.lamb.size, self.t.size,Nk,Nk), dtype = 'complex_')   # dH matrix
+        dH   = np.zeros((self.lamb.size, self.t.size,Nk,Nk), dtype = 'complex128')   # dH matrix
         for i in range(self.lamb.size):
             for l in range(self.t.size):
                 for k in range(-nmax,nmax+1):                                              
@@ -166,7 +166,7 @@ class propagation(object):                                                      
         H0 = self.H[0]                                                             # Non controlled part of Hamiltonian
         H1 = self.H[1]                                                             # Controlled part of H by cos(u)
         H2 = self.H[2]                                                             # Controlled part of H by sin(u)
-        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                       # Initialisation of propagator
+        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                       # Initialisation of propagator
         U = linalg.expm(-1j*(H0[i,n,:,:] + np.cos(ut)*H1 + np.sin(ut)*H2)*dt)      # Propagator at each time step
         return U
 
@@ -176,7 +176,7 @@ class propagation(object):                                                      
         H1  = self.H[1]                                                            # Controlled part of H by cos(u)
         H2  = self.H[2]                                                            # Controlled part of H by sin(u)
         dH  = self.dH[0,n,:,:]                                                     # Derivative of H1 by s
-        U   = np.zeros((self.Nk*2,self.Nk*2), dtype = 'complex_')                  # Initialisation of propagator
+        U   = np.zeros((self.Nk*2,self.Nk*2), dtype = 'complex128')                  # Initialisation of propagator
         H        = H0[0,n,:,:] + np.cos(ut)*H1 + np.sin(ut)*H2                     # Controlled Hamiltonian
         Htilde   = self.get_extended_dynamic(H, dH)                                # Auxiliary matrix
         U        = linalg.expm(-1j*dt*Htilde)                                      # Evolution operator
@@ -185,7 +185,7 @@ class propagation(object):                                                      
     def get_state(self, i):
         """ State at time t."""
         Nt     = self.t.size                                                       # Number of time points
-        C      = np.zeros((self.Nk,Nt), dtype = 'complex_')                        # Initialisation of State
+        C      = np.zeros((self.Nk,Nt), dtype = 'complex128')                        # Initialisation of State
         C[:,0] = self.psi0                                                         # Initial condition
         for n in range(Nt-1):
             dt       = self.t[n+1]-self.t[n]                                       # Time step
@@ -197,7 +197,7 @@ class propagation(object):                                                      
     def get_state_extended(self):
         """ Extended state."""
         Nt        = self.t.size                                                    # Number of time points
-        C         = np.zeros((2*self.Nk,Nt), dtype = 'complex_')                   # Initialisation of State
+        C         = np.zeros((2*self.Nk,Nt), dtype = 'complex128')                   # Initialisation of State
         C[0:self.Nk,0] = self.psi0                                                 # Initial conditions
         for n in range(Nt-1):
             dt       = self.t[n+1]-self.t[n]                                       # Time step
@@ -211,7 +211,7 @@ class propagation(object):                                                      
         Nt       = self.t.size                                                     # Number of time points
         rev_time = list(reversed(range(len(self.t))))                              # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        D        = np.zeros((self.Nk,Nt), dtype = 'complex_')                      # Initialization of adjoint state
+        D        = np.zeros((self.Nk,Nt), dtype = 'complex128')                      # Initialization of adjoint state
         D[:,-1]  = chif                                                            # Final condition for the adjoint state
         for n in rev_time:
             dt       = self.t[n]-self.t[n-1]                                       # Time step
@@ -454,8 +454,8 @@ psi1  = dyn.get_state(0)                                                        
 psi2  = dyn.get_state(1)                                                           # State associated to optimal control
 
 ''' Compute QFI and CFI '''
-CFI = np.zeros(Nt, dtype='complex_')
-QFI = np.zeros(Nt, dtype='complex_')
+CFI = np.zeros(Nt, dtype='complex128')
+QFI = np.zeros(Nt, dtype='complex128')
 propa = propagation(t, u, H, Nk, g, psi0, psit, dH)
 C = propa.get_state_extended()
 psi = C[0:Nk,:]                                                     

@@ -64,7 +64,7 @@ class BEC(object):
         """ Return the free Hamiltonian part."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H0   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H0 matrix
+        H0   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H0 matrix
         for k in range(-nmax,nmax+1):                                              # Create H0 matrix
             j = k+nmax
             H0[j,j] = (self.q + k)**2
@@ -74,7 +74,7 @@ class BEC(object):
         """ Return the part of H controlled by the cosine function."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H1   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H1 matrix
+        H1   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H1 matrix
         for k in range(-nmax,nmax+1):
             j = k+nmax
             if(k < nmax):
@@ -86,7 +86,7 @@ class BEC(object):
         """ Return the part of H controlled by the sine function."""
         nmax = self.get_TruncationOrder()
         Nk   = self.dimension                                                      # System's dimension
-        H2   = np.zeros((Nk,Nk), dtype = 'complex_')                               # H2 matrix
+        H2   = np.zeros((Nk,Nk), dtype = 'complex128')                               # H2 matrix
         for k in range(-nmax,nmax+1):
             j = k+nmax
             if(k < nmax):
@@ -149,14 +149,14 @@ class propagation(object):                                                      
         H0 = self.H[0]                                                             # field-free Hamiltonian
         H1 = self.H[1]                                                             # Controlled part of H by cos(u)
         H2 = self.H[2]                                                             # Controlled part of H by sin(u)
-        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex_')                       # Initialization of the propagator
+        U  = np.zeros((self.Nk,self.Nk), dtype = 'complex128')                       # Initialization of the propagator
         U = linalg.expm(-1j*(H0 + np.cos(ut)*H1 + np.sin(ut)*H2)*dt)               # Propagator at each time step
         return U
 
     def get_state(self):
         """ State at time t."""
         Nt       = self.t.size                                                     # Number of time points
-        C        = np.zeros((Nt,self.Nk,self.Nk), dtype = 'complex_')              # Initialization of the state
+        C        = np.zeros((Nt,self.Nk,self.Nk), dtype = 'complex128')              # Initialization of the state
         C[0,:,:] = self.psi0                                                       # Initial condition
         for n in range(Nt-1):
             dt         = self.t[n+1]-self.t[n]                                     # Time step
@@ -170,7 +170,7 @@ class propagation(object):                                                      
         Nt        = self.t.size                                                    # Number of time points
         rev_time  = list(reversed(range(len(self.t))))                             # Backward time
         del(rev_time[-1])                                                          # Delete the first index to compute D(0)
-        D         = np.zeros((Nt,self.Nk,self.Nk), dtype = 'complex_')             # Initialization of adjoint state
+        D         = np.zeros((Nt,self.Nk,self.Nk), dtype = 'complex128')             # Initialization of adjoint state
         D[-1,:,:] = -sum(np.diag(self.psit.conj().T @ psif))*self.psit             # Final condition for the adjoint state
         for n in rev_time:
             dt         = self.t[n]-self.t[n-1]                                     # Time step
